@@ -77,3 +77,20 @@ CREATE TABLE IF NOT EXISTS loan (
     FOREIGN KEY (idBook, idBookCopy) REFERENCES bookCopy (idBook, idBookCopy)
 );
 
+INSERT IGNORE INTO author (idAuthor, name) VALUES (1, 'author1');
+INSERT IGNORE INTO author (idAuthor, name) VALUES (2, 'author2');
+INSERT IGNORE INTO publisher (idPublisher, name) VALUES (1, 'publisher1');
+INSERT IGNORE INTO bookLanguage (idLanguage, title) VALUES (1, 'spanish');
+INSERT IGNORE INTO book (idBook, title, idAuthor, description, publicationDate, idPublisher, idLanguage) VALUES (1,'El señor de los anillos', 1, 'Un libro de aventrua medieval', CURRENT_DATE, 1, 1);
+INSERT IGNORE INTO book (idBook, title, idAuthor, description, publicationDate, idPublisher, idLanguage) VALUES (2,'Harry Potter', 2, 'Un libro de aventrua mágica', CURRENT_DATE, 1, 1);
+INSERT IGNORE INTO bookCopy (idBook, idBookCopy) VALUES (1,1);
+INSERT IGNORE INTO bookCopy (idBook, idBookCopy) VALUES (1,2);
+INSERT IGNORE INTO bookCopy (idBook, idBookCopy) VALUES (2,1);
+INSERT IGNORE INTO role (idRole, title) VALUES (1, 'student');
+INSERT IGNORE INTO role (idRole, title) VALUES (2, 'professor');
+INSERT IGNORE INTO client (dni, name, lastName, birthDate, address, email, idRole) VALUES (1, 'Ignacio', 'Oromendia', '2001-03-26', 'Calle 2201', 'igna@test.com', 1);
+INSERT IGNORE INTO client (dni, name, lastName, birthDate, address, email, idRole) VALUES (2, 'Juan', 'Perez', '1990-10-25', 'Calle 121', 'jaun@test.com', 2);
+INSERT IGNORE INTO loan (idLoan, idBook, idBookCopy, dni, loanDate, limitReturnDate) VALUES (1, 1, 1, 1, CURRENT_DATE, CURRENT_DATE + INTERVAL 14 DAY);
+INSERT IGNORE INTO loan (idLoan, idBook, idBookCopy, dni, loanDate, limitReturnDate) VALUES (2, 2, 1, 2, CURRENT_DATE, CURRENT_DATE + INTERVAL 14 DAY);
+INSERT IGNORE INTO loan (idLoan, idBook, idBookCopy, dni, loanDate, limitReturnDate) VALUES (3, 1, 2, 2, CURRENT_DATE, CURRENT_DATE + INTERVAL 14 DAY);
+
