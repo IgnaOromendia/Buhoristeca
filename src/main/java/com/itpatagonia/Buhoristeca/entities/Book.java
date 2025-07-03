@@ -1,5 +1,6 @@
 package com.itpatagonia.Buhoristeca.entities;
 
+import com.itpatagonia.Buhoristeca.dto.BookDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -35,4 +36,8 @@ public class Book {
 
     @Column(name = "isActive", nullable = false)
     private Integer isActive;
+
+    public BookDto convertToBookDto() {
+        return new BookDto(title, description, publicationDate);
+    }
 }
