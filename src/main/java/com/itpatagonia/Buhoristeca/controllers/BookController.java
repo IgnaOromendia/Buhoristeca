@@ -1,5 +1,6 @@
 package com.itpatagonia.Buhoristeca.controllers;
 
+import com.itpatagonia.Buhoristeca.dto.BookCopiesAmountDto;
 import com.itpatagonia.Buhoristeca.dto.BookDto;
 import com.itpatagonia.Buhoristeca.services.BookService;
 
@@ -22,6 +23,38 @@ public class BookController {
             @PathVariable Integer idRole,
             @RequestParam LocalDate startDate,
             @RequestParam LocalDate endDate) {
-        return ResponseEntity.ok(bookService.getAllLoanedBooks(idRole, startDate, endDate));
+        return ResponseEntity.ok(bookService.getAllLoanedBooksByRole(idRole, startDate, endDate));
+    }
+
+    @GetMapping("/copies")
+    public ResponseEntity<List<BookCopiesAmountDto>> getAmountOfCopies() {
+        return ResponseEntity.ok(bookService.getAllCopiesAmount());
+    }
+
+    @GetMapping("/copies/{idBook}")
+    public ResponseEntity<BookCopiesAmountDto> getAmountOfCopiesByBook(
+            @PathVariable Integer idBook
+    ) {
+        return ResponseEntity.ok(bookService.getAllCopiesAmountByBook(idBook));
+    }
+
+    @GetMapping("/loaned/never")
+    public ResponseEntity<List<BookDto>> getAllBooksWithNoLoans() {
+        return ResponseEntity.ok(bookService.getAllBooksWithNoLoans());
+    }
+
+    @GetMapping("/loaned/never/between")
+    public ResponseEntity<List<BookDto>> getAllBooksWithNoLoansBetweenDates(
+            @RequestParam LocalDate startDate,
+            @RequestParam LocalDate endDate
+    ) {
+        return ResponseEntity.ok(bookService.getAllBooksWithNoLoansBetween(startDate, endDate));
+    }
+
+    @GetMapping("/loaned/to/{idClient}")
+    public ResponseEntity<List<BookDto>> getBookLoanedToClientWithId(
+            @PathVariable Integer idClient
+    ) {
+        return ResponseEntity.ok(bookService.getBookLoanedToClientWithId(idClient));
     }
 }
