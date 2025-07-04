@@ -1,26 +1,26 @@
 package com.itpatagonia.Buhoristeca.entities;
 
 import com.itpatagonia.Buhoristeca.dto.BookDto;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 @Entity
 @Table(name = "book")
 public class Book {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idBook", nullable = false)
     private Integer idBook;
 
     @Column(name = "title", nullable = false)
     private String title;
 
-    @Column(name = "idAuthor", nullable = false)
-    private Integer idAuthor;
+    @ManyToOne
+    @JoinColumn(name = "idAuthor", nullable = false)
+    private Author author;
 
     @Column(name = "description", nullable = false)
     private String description;
@@ -28,16 +28,26 @@ public class Book {
     @Column(name = "publicationDate", nullable = false)
     private LocalDate publicationDate;
 
-    @Column(name = "idPublisher", nullable = false)
-    private Integer idPublisher;
+    @ManyToOne
+    @JoinColumn(name = "idPublisher", nullable = false)
+    private Publisher publisher;
 
-    @Column(name = "idLanguage", nullable = false)
-    private Integer idLanguage;
+    @ManyToOne
+    @JoinColumn(name = "idLanguage", nullable = false)
+    private Language language;
 
     @Column(name = "isActive", nullable = false)
     private Integer isActive;
 
+    @ManyToMany
+    @JoinTable(
+            name = "bookGenre",
+            joinColumns = @JoinColumn(name = "idBook"),
+            inverseJoinColumns = @JoinColumn(name = "idGenre")
+    )
+    private Set<Genre> genres;
+
     public BookDto convertToBookDto() {
-        return new BookDto(title, description, publicationDate);
+        return new BookDto(title, description, publicationDate, genres);
     }
 }
