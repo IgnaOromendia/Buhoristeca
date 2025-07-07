@@ -47,6 +47,17 @@ public class Book {
     )
     private Set<Genre> genres;
 
+    public Book(String title, Author author, String description, LocalDate publicationDate, Publisher publisher, Language language, Set<Genre> genres) {
+        this.title = title;
+        this.author = author;
+        this.description = description;
+        this.publicationDate = publicationDate;
+        this.publisher = publisher;
+        this.language = language;
+        this.genres = genres;
+        this.isActive = 1;
+    }
+
     public BookDto convertToBookDto() {
         return new BookDto(title, description, publicationDate, genres);
     }

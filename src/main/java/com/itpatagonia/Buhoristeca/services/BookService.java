@@ -2,17 +2,19 @@ package com.itpatagonia.Buhoristeca.services;
 
 import com.itpatagonia.Buhoristeca.dto.BookCopiesAmountDto;
 import com.itpatagonia.Buhoristeca.dto.BookDto;
-import com.itpatagonia.Buhoristeca.entities.Book;
+import com.itpatagonia.Buhoristeca.dto.BookRequestDto;
+import com.itpatagonia.Buhoristeca.entities.*;
 import com.itpatagonia.Buhoristeca.projections.BookCopiesAmountProjection;
-import com.itpatagonia.Buhoristeca.repositories.BookRepository;
+import com.itpatagonia.Buhoristeca.repositories.*;
 
-import com.itpatagonia.Buhoristeca.repositories.ClientRepository;
-import com.itpatagonia.Buhoristeca.repositories.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class BookService {
@@ -25,6 +27,19 @@ public class BookService {
 
     @Autowired
     private ClientRepository clientRepository;
+
+    @Autowired
+    private AuthorRepository authorRepository;
+
+    @Autowired
+    private PublisherRepository publisherRepository;
+
+    @Autowired
+    private LanguageRepository languageRepository;
+
+    @Autowired
+    private GenreRepository genreRepository;
+
 
     public List<BookDto> getAllLoanedBooksByRole(Integer idRole, LocalDate startDate, LocalDate endDate) {
         assertEndDateIsAfterStartDate(startDate, endDate);
@@ -89,6 +104,18 @@ public class BookService {
         return books.stream().map(Book::convertToBookDto).toList();
     }
 
+    public BookDto registerNewBook(BookRequestDto bookRequestDto) {
+        assertBookIsNotRegistered(bookRequestDto);
+
+        Author bookAuthor       = assertAuthorExists(bookRequestDto.getIdAuthor());
+        Publisher bookPublisher = assertPublisherExists(bookRequestDto.getIdPublisher());
+        Language bookLanguage   = assertLanguageExists(bookRequestDto.getIdLanguage());
+        Set<Genre> bookGenres   = assertAllGenresExists(bookRequestDto.getGenresIds());
+
+        Book savedBook = bookRepository.save(bookRequestDto.convertToBook(bookAuthor, bookLanguage, bookPublisher, bookGenres));
+        return savedBook.convertToBookDto();
+    }
+
     // Asserts
 
     private void assertEndDateIsAfterStartDate(LocalDate startDate, LocalDate endDate) {
@@ -105,6 +132,48 @@ public class BookService {
 
     private void assertClientIsRegistered(Integer idClient) {
         if (clientRepository.findById(idClient).isEmpty()) throw new RuntimeException("El cliente con id " + idClient + " no está registrado");
+    }
+
+    private Author assertAuthorExists(Integer idAuthor) {
+        Optional<Author> author = authorRepository.findById(idAuthor);
+
+        if (author.isEmpty()) throw new RuntimeException("El autor con id " + idAuthor + " no existe");
+
+        return author.get();
+    }
+
+    private Publisher assertPublisherExists(Integer idPublisher) {
+        Optional<Publisher> publisher = publisherRepository.findById(idPublisher);
+
+        if (publisher.isEmpty()) throw new RuntimeException("La editorial con id " + idPublisher + " no existe");
+
+        return publisher.get();
+    }
+
+    private Language assertLanguageExists(Integer idLanguage) {
+        Optional<Language> language = languageRepository.findById(idLanguage);
+
+        if (language.isEmpty()) throw new RuntimeException("El idioma con id " + idLanguage + " no existe");
+
+        return language.get();
+    }
+
+    private void assertBookIsNotRegistered(BookRequestDto bookRequestDto) {
+        if (bookRepository.findByAttribute(
+                bookRequestDto.getTitle(),
+                bookRequestDto.getIdPublisher(),
+                bookRequestDto.getIdAuthor(),
+                bookRequestDto.getIdLanguage()).isPresent()) throw new RuntimeException("El libro ya existe");
+    }
+
+    private Set<Genre> assertAllGenresExists(Set<Integer> genresIds) {
+        if (genresIds.isEmpty()) return new HashSet<>();
+
+        List<Genre> genres = genreRepository.findAllById(genresIds);
+
+        if (genres.isEmpty()) throw new RuntimeException("Error en los géneros");
+
+        return new HashSet<>(genres);
     }
 
 

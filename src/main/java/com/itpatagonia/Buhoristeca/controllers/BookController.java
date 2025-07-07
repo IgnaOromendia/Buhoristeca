@@ -2,9 +2,11 @@ package com.itpatagonia.Buhoristeca.controllers;
 
 import com.itpatagonia.Buhoristeca.dto.BookCopiesAmountDto;
 import com.itpatagonia.Buhoristeca.dto.BookDto;
+import com.itpatagonia.Buhoristeca.dto.BookRequestDto;
 import com.itpatagonia.Buhoristeca.services.BookService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -56,5 +58,10 @@ public class BookController {
             @PathVariable Integer idClient
     ) {
         return ResponseEntity.ok(bookService.getBookLoanedToClientWithId(idClient));
+    }
+
+    @PostMapping(value = "/new", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<BookDto> registerNewBook(@RequestBody BookRequestDto bookRequestDto) {
+        return ResponseEntity.ok(bookService.registerNewBook(bookRequestDto));
     }
 }

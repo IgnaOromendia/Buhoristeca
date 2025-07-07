@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface BookRepository extends JpaRepository<Book, Integer> {
@@ -93,4 +94,14 @@ public interface BookRepository extends JpaRepository<Book, Integer> {
         GROUP BY b.idBook;
         """, nativeQuery = true)
     List<Book> findBooksLoanedToClientWithId(@Param("idClient") Integer idClient);
+
+    @Query(value = """
+            SELECT *
+            FROM book
+            WHERE title = :title AND idPublisher = :publisher AND idAuthor = :author AND idLanguage = :language;
+            """, nativeQuery = true)
+    Optional<Book> findByAttribute(@Param("title") String title,
+                                   @Param("publisher") Integer idPublisher,
+                                   @Param("author") Integer idAuthor,
+                                   @Param("language") Integer idLanguage);
 }
