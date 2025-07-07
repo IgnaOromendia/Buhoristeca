@@ -1,9 +1,7 @@
 package com.itpatagonia.Buhoristeca.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.itpatagonia.Buhoristeca.dto.ClientDto;
+import jakarta.persistence.*;
 
 import java.time.LocalDate;
 
@@ -33,6 +31,24 @@ public class Client {
     @Column(name = "isActive", nullable = false)
     private Integer isActive;
 
-    @Column(name = "idRole", nullable = false)
-    private Integer idRole;
+    @ManyToOne
+    @JoinColumn(name = "idRole", nullable = false)
+    private Role role;
+
+    public Client(Integer dni, String name, String lastName, LocalDate birthDate, String email, String address, Role role) {
+        this.dni = dni;
+        this.name = name;
+        this.lastName = lastName;
+        this.birthDate = birthDate;
+        this.email = email;
+        this.address = address;
+        this.role = role;
+        this.isActive = 1;
+    }
+
+    public Client() {}
+
+    public ClientDto converToClientDto() {
+        return new ClientDto(this.name, this.lastName, this.role);
+    }
 }
