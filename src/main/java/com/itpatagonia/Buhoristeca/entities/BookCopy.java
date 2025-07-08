@@ -1,5 +1,6 @@
 package com.itpatagonia.Buhoristeca.entities;
 
+import com.itpatagonia.Buhoristeca.services.BookCopyService;
 import jakarta.persistence.*;
 
 @Entity
@@ -7,7 +8,7 @@ import jakarta.persistence.*;
 public class BookCopy {
 
     @EmbeddedId
-    private BookCopyId id;
+    private BookCopyId bookCopyId;
 
     // Como la clave es compuesta (idBook, idBookCopy) tengo que indicarle cual es la de Book
     @ManyToOne
@@ -19,4 +20,12 @@ public class BookCopy {
     @JoinColumn(name = "idState", nullable = false)
     private BookState state;
 
+    public void updateStateToNotAvailableOn(BookCopyService bookCopyService) {
+        bookCopyId.updateStateToNotAvailableOn(bookCopyService);
+    }
+
+    public void addBookInformationTo(StringBuilder bookTitle, StringBuilder copyNumber) {
+        this.book.addTitleTo(bookTitle);
+        this.bookCopyId.addCopyNumberTo(copyNumber);
+    }
 }

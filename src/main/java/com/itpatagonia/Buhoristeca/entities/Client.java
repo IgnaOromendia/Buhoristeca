@@ -51,4 +51,9 @@ public class Client {
     public ClientDto converToClientDto() {
         return new ClientDto(this.name, this.lastName, this.role);
     }
+
+    public void addNameInformationTo(StringBuilder clientName, StringBuilder clientLastName) {
+        clientName.append(this.name);
+        clientLastName.append(this.lastName);
+    }
 }

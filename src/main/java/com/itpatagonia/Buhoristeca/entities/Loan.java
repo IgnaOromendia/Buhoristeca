@@ -1,9 +1,7 @@
 package com.itpatagonia.Buhoristeca.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.itpatagonia.Buhoristeca.dto.LoanDto;
+import jakarta.persistence.*;
 
 import java.time.LocalDate;
 
@@ -12,17 +10,20 @@ import java.time.LocalDate;
 public class Loan {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idLoan", nullable = false)
     private Integer idLoan;
 
-    @Column(name = "idBook", nullable = false)
-    private Integer idBook;
+    @ManyToOne
+    @JoinColumns({
+            @JoinColumn(name = "idBook", nullable = false),
+            @JoinColumn(name = "idBookCopy", nullable = false)
+    })
+    private BookCopy bookCopy;
 
-    @Column(name = "idBookCopy", nullable = false)
-    private Integer idBookCopy;
-
-    @Column(name = "dni", nullable = false)
-    private Integer dni;
+    @ManyToOne
+    @JoinColumn(name = "dni", nullable = false)
+    private Client client;
 
     @Column(name = "loanDate", nullable = false)
     private LocalDate loanDate;
@@ -32,4 +33,25 @@ public class Loan {
 
     @Column(name = "limitReturnDate", nullable = false)
     private LocalDate limitReturnDate;
+
+    public Loan() {}
+
+    public Loan(BookCopy bookCopy, Client client) {
+        this.bookCopy = bookCopy;
+        this.client = client;
+        this.loanDate = LocalDate.now();
+        this.limitReturnDate = LocalDate.now().plusDays(14);
+    }
+
+    public LoanDto convertToDto() {
+        StringBuilder bookTitle = new StringBuilder();
+        StringBuilder copyNumber = new StringBuilder();
+        StringBuilder clientName = new StringBuilder();
+        StringBuilder clientLastName = new StringBuilder();
+
+        this.client.addNameInformationTo(clientName, clientLastName);
+        this.bookCopy.addBookInformationTo(bookTitle, copyNumber);
+
+        return new LoanDto(bookTitle.toString(), Integer.parseInt(copyNumber.toString()), clientName.toString(), clientLastName.toString());
+    }
 }

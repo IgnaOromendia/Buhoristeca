@@ -58,7 +58,13 @@ public class Book {
         this.isActive = 1;
     }
 
+    public Book() {}
+
     public BookDto convertToBookDto() {
         return new BookDto(title, description, publicationDate, genres);
+    }
+
+    public void addTitleTo(StringBuilder bookTitle) {
+        bookTitle.append(this.title);
     }
 }
