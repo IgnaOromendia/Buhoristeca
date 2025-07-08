@@ -13,10 +13,10 @@ public interface BookCopyRepository extends JpaRepository<BookCopy, Integer> {
             SELECT bc.*
             FROM bookCopy bc
             JOIN book b ON b.idBook = bc.idBook
-            WHERE bc.idState = 1
+            WHERE bc.idState = 1 AND bc.idBook = :idBook
             LIMIT 1;
             """, nativeQuery = true)
-    BookCopy findAvailableCopyWithIdBook(Integer idBook);
+    BookCopy findAvailableCopyWithIdBook(@Param("idBook") Integer idBook);
 
     @Modifying
     @Transactional
@@ -27,4 +27,14 @@ public interface BookCopyRepository extends JpaRepository<BookCopy, Integer> {
             """, nativeQuery = true)
     void updateStateToNotAvailableOfCopyWithId(@Param("idBook") Integer idBook,
                                                @Param("idBookCopy") Integer idBookCopy);
+
+    @Modifying
+    @Transactional
+    @Query(value = """
+            UPDATE bookCopy
+            SET idState = 1
+            WHERE idBook = :idBook AND idBookCopy = :idBookCopy
+            """, nativeQuery = true)
+    void updateStateToAvailableOf(@Param("idBook") Integer idBook,
+                                  @Param("idBookCopy") Integer idBookCopy);
 }

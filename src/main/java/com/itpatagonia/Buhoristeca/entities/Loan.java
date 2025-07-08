@@ -52,6 +52,6 @@ public class Loan {
         this.client.addNameInformationTo(clientName, clientLastName);
         this.bookCopy.addBookInformationTo(bookTitle, copyNumber);
 
-        return new LoanDto(bookTitle.toString(), Integer.parseInt(copyNumber.toString()), clientName.toString(), clientLastName.toString());
+        return new LoanDto(bookTitle.toString(), Integer.parseInt(copyNumber.toString()), clientName.toString(), clientLastName.toString(), this.loanDate, this.returnDate);
     }
 }

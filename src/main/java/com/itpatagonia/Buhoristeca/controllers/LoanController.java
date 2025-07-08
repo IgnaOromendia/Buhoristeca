@@ -21,4 +21,12 @@ public class LoanController {
         return ResponseEntity.ok(loanService.registerNewLoan(idClient, idBook));
     }
 
+    @PutMapping("/return")
+    public ResponseEntity<LoanDto> registerLoanReturn(
+            @RequestParam Integer idClient,
+            @RequestParam Integer idBook,
+            @RequestParam Integer idBookCopy) {
+        return ResponseEntity.ok(loanService.registerLoanReturn(idClient, idBook, idBookCopy));
+    }
+
 }

@@ -28,4 +28,8 @@ public class BookCopyService {
     public void updateStateToNotAvailableOfCopyWithId(Integer idBook, Integer idBookCopy) {
         bookCopyRepository.updateStateToNotAvailableOfCopyWithId(idBook, idBookCopy);
     }
+
+    public void updateStateToAvailableOf(Integer idBook, Integer idBookCopy) {
+        bookCopyRepository.updateStateToAvailableOf(idBook, idBookCopy);
+    }
 }
