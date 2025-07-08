@@ -111,6 +111,7 @@ INSERT IGNORE INTO bookCopy (idBook, idBookCopy, idState) VALUES (1,3,1);
 INSERT IGNORE INTO bookCopy (idBook, idBookCopy, idState) VALUES (2,1,2);
 INSERT IGNORE INTO bookCopy (idBook, idBookCopy, idState) VALUES (2,2,1);
 INSERT IGNORE INTO bookCopy (idBook, idBookCopy, idState) VALUES (2,3,1);
+INSERT IGNORE INTO bookCopy (idBook, idBookCopy, idState) VALUES (3,1,1);
 
 INSERT IGNORE INTO role (idRole, title) VALUES (1, 'student');
 INSERT IGNORE INTO role (idRole, title) VALUES (2, 'professor');
