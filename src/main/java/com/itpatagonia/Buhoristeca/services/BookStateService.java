@@ -21,4 +21,7 @@ public class BookStateService {
         return state.get();
     }
 
+    public void assertStateExists(Integer idState) {
+        if (bookStateRepository.findById(idState).isEmpty()) throw new RuntimeException("El estado con id " + idState + " no existe");
+    }
 }

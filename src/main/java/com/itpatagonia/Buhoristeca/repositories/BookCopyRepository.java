@@ -19,27 +19,6 @@ public interface BookCopyRepository extends JpaRepository<BookCopy, BookCopyId> 
             """, nativeQuery = true)
     BookCopy findAvailableCopyWithIdBook(@Param("idBook") Integer idBook);
 
-    @Modifying
-    @Transactional
-    @Query(value = """
-            UPDATE bookCopy
-            SET idState = 2
-            WHERE idBook = :idBook AND idBookCopy = :idBookCopy
-            """, nativeQuery = true)
-    void updateStateToNotAvailableOfCopyWithId(@Param("idBook") Integer idBook,
-                                               @Param("idBookCopy") Integer idBookCopy);
-
-    @Modifying
-    @Transactional
-    @Query(value = """
-            UPDATE bookCopy
-            SET idState = 1
-            WHERE idBook = :idBook AND idBookCopy = :idBookCopy
-            """, nativeQuery = true)
-    void updateStateToAvailableOf(@Param("idBook") Integer idBook,
-                                  @Param("idBookCopy") Integer idBookCopy);
-
-
     @Query(value = """
             SELECT idBookCopy
             FROM bookCopy
@@ -48,4 +27,23 @@ public interface BookCopyRepository extends JpaRepository<BookCopy, BookCopyId> 
             LIMIT 1
             """, nativeQuery = true)
     Integer getLastIdBookCopy(@Param("idBook") Integer idBook);
+
+    @Query(value = """
+            SELECT *
+            FROM bookCopy
+            WHERE idBook = :idBook AND idBookCopy = :idBookCopy
+            """, nativeQuery = true)
+    BookCopy findByBookCopyId(@Param("idBook") Integer idBook,
+                              @Param("idBookCopy") Integer idBookCOpy);
+
+    @Modifying
+    @Transactional
+    @Query(value = """
+            UPDATE bookCopy
+            SET idState = :idState
+            WHERE idBook = :idBook AND idBookCopy = :idBookCopy
+            """, nativeQuery = true)
+    void updateState(@Param("idBook") Integer idBook,
+                     @Param("idBookCopy") Integer idBookCopy,
+                     @Param("idState") Integer idState);
 }

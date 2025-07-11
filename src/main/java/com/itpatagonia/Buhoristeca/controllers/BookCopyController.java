@@ -4,10 +4,7 @@ import com.itpatagonia.Buhoristeca.dto.BookCopyDto;
 import com.itpatagonia.Buhoristeca.services.BookCopyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/user/bookCopies")
@@ -21,5 +18,14 @@ public class BookCopyController {
             @RequestParam Integer idBook
     ) {
         return ResponseEntity.ok(bookCopyService.registerNewBookCopies(idBook));
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<BookCopyDto> updateBookCopyState(
+            @RequestParam Integer idBook,
+            @RequestParam Integer idBookCopy,
+            @RequestParam Integer idState
+    ) {
+        return ResponseEntity.ok(bookCopyService.updateStateOf(idBook, idBookCopy, idState));
     }
 }

@@ -6,8 +6,11 @@ import com.itpatagonia.Buhoristeca.entities.BookCopy;
 import com.itpatagonia.Buhoristeca.entities.BookState;
 import com.itpatagonia.Buhoristeca.repositories.BookCopyRepository;
 import com.itpatagonia.Buhoristeca.repositories.BookRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -23,17 +26,39 @@ public class BookCopyService {
     @Autowired
     private BookStateService bookStateService;
 
+    @PersistenceContext
+    private EntityManager entityManager;
+
+    private final Integer idAvailableState      = 1;
+    private final Integer idNotAvailableState   = 2;
+
     public BookCopy getAvailableCopy(Integer idBook) {
         bookService.assertBookExists(idBook);
         return assertThereIsABookCopyAvailable(idBook);
     }
 
     public void updateStateToNotAvailableOfCopyWithId(Integer idBook, Integer idBookCopy) {
-        bookCopyRepository.updateStateToNotAvailableOfCopyWithId(idBook, idBookCopy);
+        updateStateOf(idBook, idBookCopy, idNotAvailableState);
     }
 
     public void updateStateToAvailableOf(Integer idBook, Integer idBookCopy) {
-        bookCopyRepository.updateStateToAvailableOf(idBook, idBookCopy);
+        updateStateOf(idBook, idBookCopy, idAvailableState);
+    }
+
+    @Transactional
+    public BookCopyDto updateStateOf(Integer idBook, Integer idBookCopy, Integer idState) {
+        bookService.assertBookExists(idBook);
+        assertBookCopyExists(idBook, idBookCopy);
+        bookStateService.assertStateExists(idState);
+
+        bookCopyRepository.updateState(idBook, idBookCopy, idState);
+
+        BookCopy updatedBookCopy = bookCopyRepository.findByBookCopyId(idBook, idBookCopy);
+
+        // Si no hacemos esto deuvleve los datos cacheados, entonces parece que le estado no cambia
+        entityManager.refresh(updatedBookCopy);
+
+        return updatedBookCopy.convertToDto();
     }
 
     public BookCopyDto registerNewBookCopies(Integer idBook) {
@@ -50,6 +75,10 @@ public class BookCopyService {
 
     // Asserts
 
+    private void assertBookCopyExists(Integer idBook, Integer idBookCopy) {
+        if (bookCopyRepository.findByBookCopyId(idBook, idBookCopy) == null) throw new RuntimeException("La copia con id " + idBookCopy + " del libro con id " + idBook + " no existe");
+    }
+
     private BookCopy assertThereIsABookCopyAvailable(Integer idBook) {
         BookCopy bookCopy = bookCopyRepository.findAvailableCopyWithIdBook(idBook);
 
@@ -58,6 +87,7 @@ public class BookCopyService {
 
         return bookCopy;
     }
+
 
 
 }
