@@ -7,13 +7,12 @@ import com.itpatagonia.Buhoristeca.entities.*;
 import com.itpatagonia.Buhoristeca.projections.BookCopiesAmountProjection;
 import com.itpatagonia.Buhoristeca.repositories.*;
 
+import com.itpatagonia.Buhoristeca.util.DateValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -23,27 +22,29 @@ public class BookService {
     private BookRepository bookRepository;
 
     @Autowired
-    private RoleRepository roleRepository;
+    private ClientService clientService;
 
     @Autowired
-    private ClientRepository clientRepository;
+    private AuthorService authorService;
 
     @Autowired
-    private AuthorRepository authorRepository;
+    private PublisherService publisherService;
 
     @Autowired
-    private PublisherRepository publisherRepository;
+    private LanguageService languageService;
 
     @Autowired
-    private LanguageRepository languageRepository;
+    private GenreService genreService;
 
     @Autowired
-    private GenreRepository genreRepository;
+    private RoleService roleService;
 
+    @Autowired
+    private DateValidator dateValidator;
 
     public List<BookDto> getAllLoanedBooksByRole(Integer idRole, LocalDate startDate, LocalDate endDate) {
-        assertEndDateIsAfterStartDate(startDate, endDate);
-        assertRoleExists(idRole);
+        dateValidator.assertEndDateIsAfterStartDate(startDate, endDate);
+        roleService.assertRoleExists(idRole);
 
         List<Book> loanedBooks = bookRepository.findBooksWithLoansByRole(idRole, startDate, endDate);
 
@@ -83,7 +84,7 @@ public class BookService {
     }
 
     public List<BookDto> getAllBooksWithNoLoansBetween(LocalDate startDate, LocalDate endDate) {
-        assertEndDateIsAfterStartDate(startDate, endDate);
+        dateValidator.assertEndDateIsAfterStartDate(startDate, endDate);
 
         List<Book> loanedBooks = bookRepository.findBooksWithNoLoansBetween(startDate, endDate);
 
@@ -94,7 +95,7 @@ public class BookService {
     }
 
     public List<BookDto> getBookLoanedToClientWithId(Integer idClient) {
-        assertClientIsRegistered(idClient);
+        clientService.assertClientIsRegistered(idClient);
 
         List<Book> books = bookRepository.findBooksLoanedToClientWithId(idClient);
 
@@ -107,10 +108,10 @@ public class BookService {
     public BookDto registerNewBook(BookRequestDto bookRequestDto) {
         assertBookIsNotRegistered(bookRequestDto);
 
-        Author bookAuthor       = assertAuthorExists(bookRequestDto.getIdAuthor());
-        Publisher bookPublisher = assertPublisherExists(bookRequestDto.getIdPublisher());
-        Language bookLanguage   = assertLanguageExists(bookRequestDto.getIdLanguage());
-        Set<Genre> bookGenres   = assertAllGenresExists(bookRequestDto.getGenresIds());
+        Author bookAuthor       = authorService.getAuthorById(bookRequestDto.getIdAuthor());
+        Publisher bookPublisher = publisherService.getPublisherById(bookRequestDto.getIdPublisher());
+        Language bookLanguage   = languageService.getLanguageById(bookRequestDto.getIdLanguage());
+        Set<Genre> bookGenres   = genreService.getGenresByIds(bookRequestDto.getGenresIds());
 
         Book savedBook = bookRepository.save(bookRequestDto.convertToBook(bookAuthor, bookLanguage, bookPublisher, bookGenres));
         return savedBook.convertToBookDto();
@@ -118,44 +119,8 @@ public class BookService {
 
     // Asserts
 
-    private void assertEndDateIsAfterStartDate(LocalDate startDate, LocalDate endDate) {
-        if (endDate.isBefore(startDate)) throw new RuntimeException("Período de tiempo inválido");
-    }
-
-    private void assertRoleExists(Integer idRole) {
-        if (roleRepository.findById(idRole).isEmpty()) throw new RuntimeException("El rol buscado no existe");
-    }
-
-    private void assertBookExists(Integer idBook) {
+    public void assertBookExists(Integer idBook) {
         if (bookRepository.findById(idBook).isEmpty()) throw new RuntimeException("El libro con id " + idBook + " no existe");
-    }
-
-    private void assertClientIsRegistered(Integer idClient) {
-        if (clientRepository.findById(idClient).isEmpty()) throw new RuntimeException("El cliente con id " + idClient + " no está registrado");
-    }
-
-    private Author assertAuthorExists(Integer idAuthor) {
-        Optional<Author> author = authorRepository.findById(idAuthor);
-
-        if (author.isEmpty()) throw new RuntimeException("El autor con id " + idAuthor + " no existe");
-
-        return author.get();
-    }
-
-    private Publisher assertPublisherExists(Integer idPublisher) {
-        Optional<Publisher> publisher = publisherRepository.findById(idPublisher);
-
-        if (publisher.isEmpty()) throw new RuntimeException("La editorial con id " + idPublisher + " no existe");
-
-        return publisher.get();
-    }
-
-    private Language assertLanguageExists(Integer idLanguage) {
-        Optional<Language> language = languageRepository.findById(idLanguage);
-
-        if (language.isEmpty()) throw new RuntimeException("El idioma con id " + idLanguage + " no existe");
-
-        return language.get();
     }
 
     private void assertBookIsNotRegistered(BookRequestDto bookRequestDto) {
@@ -165,16 +130,5 @@ public class BookService {
                 bookRequestDto.getIdAuthor(),
                 bookRequestDto.getIdLanguage()).isPresent()) throw new RuntimeException("El libro ya existe");
     }
-
-    private Set<Genre> assertAllGenresExists(Set<Integer> genresIds) {
-        if (genresIds.isEmpty()) return new HashSet<>();
-
-        List<Genre> genres = genreRepository.findAllById(genresIds);
-
-        if (genres.isEmpty()) throw new RuntimeException("Error en los géneros");
-
-        return new HashSet<>(genres);
-    }
-
 
 }

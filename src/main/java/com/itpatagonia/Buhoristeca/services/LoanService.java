@@ -4,9 +4,6 @@ import com.itpatagonia.Buhoristeca.dto.LoanDto;
 import com.itpatagonia.Buhoristeca.entities.BookCopy;
 import com.itpatagonia.Buhoristeca.entities.Client;
 import com.itpatagonia.Buhoristeca.entities.Loan;
-import com.itpatagonia.Buhoristeca.repositories.BookCopyRepository;
-import com.itpatagonia.Buhoristeca.repositories.BookRepository;
-import com.itpatagonia.Buhoristeca.repositories.ClientRepository;
 import com.itpatagonia.Buhoristeca.repositories.LoanRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,24 +18,20 @@ public class LoanService {
     private LoanRepository loanRepository;
 
     @Autowired
-    private ClientRepository clientRepository;
+    private ClientService clientService;
 
     @Autowired
-    private BookRepository bookRepository;
-
-    @Autowired
-    private BookCopyRepository bookCopyRepository;
+    private BookService bookService;
 
     @Autowired
     private BookCopyService bookCopyService;
 
     public LoanDto registerNewLoan(Integer idClient, Integer idBook) {
-        Client client   = assertClientExists(idClient);
-
-        assertBookExists(idBook);
+        bookService.assertBookExists(idBook);
         assertClientDoesNotHaveAnotherActiveLoan(idClient);
 
-        BookCopy bookCopy = bookCopyService.getAvailableCopy(idBook);
+        Client client       = clientService.getClientById(idClient);
+        BookCopy bookCopy   = bookCopyService.getAvailableCopy(idBook);
 
         if (bookCopy == null)
             throw new RuntimeException("No hya copias disponibles del libro con id " + idBook);
@@ -51,8 +44,8 @@ public class LoanService {
     }
 
     public LoanDto registerLoanReturn(Integer idClient, Integer idBook, Integer idBookCopy) {
-        assertClientExists(idClient);
-        assertBookExists(idBook);
+        clientService.assertClientIsRegistered(idClient);
+        bookService.assertBookExists(idBook);
 
         Integer idLoan = assertBookHasBeenLoanedToClient(idClient, idBook, idBookCopy);
 
@@ -66,19 +59,6 @@ public class LoanService {
 
 
     // Asserts
-
-    private Client assertClientExists(Integer idClient) {
-        Optional<Client> client = clientRepository.findById(idClient);
-
-        if (client.isEmpty()) throw new RuntimeException("El cliente con id " + idClient + " no existe");
-
-        return client.get();
-    }
-
-    private void assertBookExists(Integer idBook) {
-        if (bookRepository.findById(idBook).isEmpty())
-            throw new RuntimeException("El libro con id " + idBook + " no existe");
-    }
 
     private void assertClientDoesNotHaveAnotherActiveLoan(Integer idClient) {
         if (loanRepository.findActiveLoanToClientWithId(idClient) != null)

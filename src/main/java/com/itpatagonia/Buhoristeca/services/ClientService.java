@@ -18,16 +18,20 @@ public class ClientService {
     private ClientRepository clientRepository;
 
     @Autowired
-    private RoleRepository roleRepository;
+    private RoleService roleService;
 
     public ClientDto registerNewClient(ClientRequestDto clientRequestDto) {
         assertClientIsNotRegistered(clientRequestDto.getClientId());
 
-        Role role = assertRoleExists(clientRequestDto.getIdRole());
+        Role role = roleService.getRoleById(clientRequestDto.getIdRole());
 
         Client savedClient = clientRepository.save(clientRequestDto.convertToClient(role));
 
         return savedClient.converToClientDto();
+    }
+
+    public Client getClientById(Integer idClient) {
+        return assertClientIsRegistered(idClient);
     }
 
     // Asserts
@@ -36,12 +40,12 @@ public class ClientService {
         if (clientRepository.findById(idClient).isPresent()) throw new RuntimeException("El cliente con id " + idClient + " ya está registrado");
     }
 
-    private Role assertRoleExists(Integer idRole) {
-        Optional<Role> role = roleRepository.findById(idRole);
+    public Client assertClientIsRegistered(Integer idClient) {
+        Optional<Client> client = clientRepository.findById(idClient);
 
-        if (role.isEmpty()) throw new RuntimeException("El rol con id " + idRole + " no existe");
+        if (client.isEmpty()) throw new RuntimeException("El cliente con id " + idClient + " no existe");
 
-        return role.get();
+        return client.get();
     }
 
 }

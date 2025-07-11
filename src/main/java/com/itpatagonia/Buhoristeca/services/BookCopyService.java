@@ -13,16 +13,11 @@ public class BookCopyService {
     private BookCopyRepository bookCopyRepository;
 
     @Autowired
-    private BookRepository bookRepository;
+    private BookService bookService;
 
     public BookCopy getAvailableCopy(Integer idBook) {
-        assertBookExists(idBook);
+        bookService.assertBookExists(idBook);
         return bookCopyRepository.findAvailableCopyWithIdBook(idBook);
-    }
-
-    private void assertBookExists(Integer idBook) {
-        if (bookRepository.findById(idBook).isEmpty())
-            throw new RuntimeException("El libro con id " + idBook + " no existe");
     }
 
     public void updateStateToNotAvailableOfCopyWithId(Integer idBook, Integer idBookCopy) {
