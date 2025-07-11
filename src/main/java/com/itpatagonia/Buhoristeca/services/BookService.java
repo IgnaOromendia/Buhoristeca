@@ -4,6 +4,8 @@ import com.itpatagonia.Buhoristeca.dto.BookCopiesAmountDto;
 import com.itpatagonia.Buhoristeca.dto.BookDto;
 import com.itpatagonia.Buhoristeca.dto.BookRequestDto;
 import com.itpatagonia.Buhoristeca.entities.*;
+import com.itpatagonia.Buhoristeca.exceptions.BookAlreadyRegistered;
+import com.itpatagonia.Buhoristeca.exceptions.BookNotFoundException;
 import com.itpatagonia.Buhoristeca.projections.BookCopiesAmountProjection;
 import com.itpatagonia.Buhoristeca.repositories.*;
 
@@ -123,7 +125,7 @@ public class BookService {
 
     public Book assertBookExists(Integer idBook) {
         Optional<Book> book = bookRepository.findById(idBook);
-        if (book.isEmpty()) throw new RuntimeException("El libro con id " + idBook + " no existe");
+        if (book.isEmpty()) throw new BookNotFoundException(idBook);
         return book.get();
     }
 
@@ -132,7 +134,7 @@ public class BookService {
                 bookRequestDto.getTitle(),
                 bookRequestDto.getIdPublisher(),
                 bookRequestDto.getIdAuthor(),
-                bookRequestDto.getIdLanguage()).isPresent()) throw new RuntimeException("El libro ya existe");
+                bookRequestDto.getIdLanguage()).isPresent()) throw new BookAlreadyRegistered(bookRequestDto.getTitle());
     }
 
 }
