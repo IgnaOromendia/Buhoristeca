@@ -6,6 +6,8 @@ import com.itpatagonia.Buhoristeca.repositories.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class BookCopyService {
 
@@ -17,7 +19,7 @@ public class BookCopyService {
 
     public BookCopy getAvailableCopy(Integer idBook) {
         bookService.assertBookExists(idBook);
-        return bookCopyRepository.findAvailableCopyWithIdBook(idBook);
+        return assertThereIsABookCopyAvailable(idBook);
     }
 
     public void updateStateToNotAvailableOfCopyWithId(Integer idBook, Integer idBookCopy) {
@@ -26,5 +28,16 @@ public class BookCopyService {
 
     public void updateStateToAvailableOf(Integer idBook, Integer idBookCopy) {
         bookCopyRepository.updateStateToAvailableOf(idBook, idBookCopy);
+    }
+
+    // Asserts
+
+    private BookCopy assertThereIsABookCopyAvailable(Integer idBook) {
+        BookCopy bookCopy = bookCopyRepository.findAvailableCopyWithIdBook(idBook);
+
+        if (bookCopy == null)
+            throw new RuntimeException("No hya copias disponibles del libro con id " + idBook);
+
+        return bookCopy;
     }
 }

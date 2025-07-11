@@ -6,10 +6,11 @@ import com.itpatagonia.Buhoristeca.entities.Client;
 import com.itpatagonia.Buhoristeca.entities.Loan;
 import com.itpatagonia.Buhoristeca.repositories.LoanRepository;
 
+import com.itpatagonia.Buhoristeca.util.DateValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import java.time.LocalDate;
 
 @Service
 public class LoanService {
@@ -26,17 +27,17 @@ public class LoanService {
     @Autowired
     private BookCopyService bookCopyService;
 
-    public LoanDto registerNewLoan(Integer idClient, Integer idBook) {
+    public LoanDto registerNewLoan(Integer idClient, Integer idBook, LocalDate returnDate) {
+        if (returnDate != null) DateValidator.assertEndDateIsAfterStartDate(LocalDate.now(), returnDate);
         bookService.assertBookExists(idBook);
+
+        Client client = clientService.getClientById(idClient);
+
         assertClientDoesNotHaveAnotherActiveLoan(idClient);
 
-        Client client       = clientService.getClientById(idClient);
         BookCopy bookCopy   = bookCopyService.getAvailableCopy(idBook);
 
-        if (bookCopy == null)
-            throw new RuntimeException("No hya copias disponibles del libro con id " + idBook);
-
-        Loan savedLoan = loanRepository.save(new Loan(bookCopy, client));
+        Loan savedLoan = loanRepository.save(new Loan(bookCopy, client, returnDate));
 
         bookCopy.updateStateToNotAvailableOn(bookCopyService);
 

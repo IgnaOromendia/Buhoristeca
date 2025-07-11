@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+
 @RestController
 @RequestMapping("/api/user/loan")
 public class LoanController {
@@ -17,8 +19,9 @@ public class LoanController {
     @PostMapping("/new")
     public ResponseEntity<LoanDto> registerNewLoan(
             @RequestParam Integer idClient,
-            @RequestParam Integer idBook) {
-        return ResponseEntity.ok(loanService.registerNewLoan(idClient, idBook));
+            @RequestParam Integer idBook,
+            @RequestParam(required = false) LocalDate returnDate) {
+        return ResponseEntity.ok(loanService.registerNewLoan(idClient, idBook, returnDate));
     }
 
     @PutMapping("/return")

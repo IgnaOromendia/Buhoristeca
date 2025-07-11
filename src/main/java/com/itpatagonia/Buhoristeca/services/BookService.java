@@ -39,11 +39,8 @@ public class BookService {
     @Autowired
     private RoleService roleService;
 
-    @Autowired
-    private DateValidator dateValidator;
-
     public List<BookDto> getAllLoanedBooksByRole(Integer idRole, LocalDate startDate, LocalDate endDate) {
-        dateValidator.assertEndDateIsAfterStartDate(startDate, endDate);
+        DateValidator.assertEndDateIsAfterStartDate(startDate, endDate);
         roleService.assertRoleExists(idRole);
 
         List<Book> loanedBooks = bookRepository.findBooksWithLoansByRole(idRole, startDate, endDate);
@@ -84,7 +81,7 @@ public class BookService {
     }
 
     public List<BookDto> getAllBooksWithNoLoansBetween(LocalDate startDate, LocalDate endDate) {
-        dateValidator.assertEndDateIsAfterStartDate(startDate, endDate);
+        DateValidator.assertEndDateIsAfterStartDate(startDate, endDate);
 
         List<Book> loanedBooks = bookRepository.findBooksWithNoLoansBetween(startDate, endDate);
 

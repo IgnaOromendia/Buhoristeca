@@ -36,11 +36,11 @@ public class Loan {
 
     public Loan() {}
 
-    public Loan(BookCopy bookCopy, Client client) {
+    public Loan(BookCopy bookCopy, Client client, LocalDate returnDate) {
         this.bookCopy = bookCopy;
         this.client = client;
         this.loanDate = LocalDate.now();
-        this.limitReturnDate = LocalDate.now().plusDays(14);
+        this.limitReturnDate = returnDate == null ? LocalDate.now().plusDays(14) :  returnDate;
     }
 
     public LoanDto convertToDto() {
@@ -52,6 +52,6 @@ public class Loan {
         this.client.addNameInformationTo(clientName, clientLastName);
         this.bookCopy.addBookInformationTo(bookTitle, copyNumber);
 
-        return new LoanDto(bookTitle.toString(), Integer.parseInt(copyNumber.toString()), clientName.toString(), clientLastName.toString(), this.loanDate, this.returnDate);
+        return new LoanDto(bookTitle.toString(), Integer.parseInt(copyNumber.toString()), clientName.toString(), clientLastName.toString(), this.loanDate, this.returnDate, this.limitReturnDate);
     }
 }
