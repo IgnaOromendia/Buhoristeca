@@ -13,6 +13,10 @@ public class BookCopyId {
 
     public BookCopyId() {}
 
+    public BookCopyId(Integer idBook) {
+        this.idBook = idBook;
+    }
+
     public BookCopyId(Integer idBook, Integer idBookCopy) {
         this.idBook = idBook;
         this.idBookCopy = idBookCopy;

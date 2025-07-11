@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -114,10 +115,16 @@ public class BookService {
         return savedBook.convertToBookDto();
     }
 
+    public Book getBookById(Integer idBook) {
+        return assertBookExists(idBook);
+    }
+
     // Asserts
 
-    public void assertBookExists(Integer idBook) {
-        if (bookRepository.findById(idBook).isEmpty()) throw new RuntimeException("El libro con id " + idBook + " no existe");
+    public Book assertBookExists(Integer idBook) {
+        Optional<Book> book = bookRepository.findById(idBook);
+        if (book.isEmpty()) throw new RuntimeException("El libro con id " + idBook + " no existe");
+        return book.get();
     }
 
     private void assertBookIsNotRegistered(BookRequestDto bookRequestDto) {

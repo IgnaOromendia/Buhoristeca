@@ -1,5 +1,6 @@
 package com.itpatagonia.Buhoristeca.entities;
 
+import com.fasterxml.jackson.annotation.JsonValue;
 import jakarta.persistence.*;
 
 @Entity
@@ -13,4 +14,10 @@ public class BookState {
 
     @Column(name = "title", nullable = false)
     private String title;
+
+    @Override
+    @JsonValue
+    public String toString() {
+        return title;
+    }
 }

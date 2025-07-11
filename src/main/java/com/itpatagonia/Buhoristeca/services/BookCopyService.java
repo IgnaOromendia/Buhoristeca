@@ -1,6 +1,9 @@
 package com.itpatagonia.Buhoristeca.services;
 
+import com.itpatagonia.Buhoristeca.dto.BookCopyDto;
+import com.itpatagonia.Buhoristeca.entities.Book;
 import com.itpatagonia.Buhoristeca.entities.BookCopy;
+import com.itpatagonia.Buhoristeca.entities.BookState;
 import com.itpatagonia.Buhoristeca.repositories.BookCopyRepository;
 import com.itpatagonia.Buhoristeca.repositories.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +20,9 @@ public class BookCopyService {
     @Autowired
     private BookService bookService;
 
+    @Autowired
+    private BookStateService bookStateService;
+
     public BookCopy getAvailableCopy(Integer idBook) {
         bookService.assertBookExists(idBook);
         return assertThereIsABookCopyAvailable(idBook);
@@ -30,6 +36,18 @@ public class BookCopyService {
         bookCopyRepository.updateStateToAvailableOf(idBook, idBookCopy);
     }
 
+    public BookCopyDto registerNewBookCopies(Integer idBook) {
+        Book book = bookService.getBookById(idBook);
+
+        Integer nextCopyNumber = bookCopyRepository.getLastIdBookCopy(idBook) + 1;
+
+        BookCopy bookCopy = new BookCopy(book, bookStateService.getAvailableState(), nextCopyNumber);
+
+        BookCopy savedBookcopy = bookCopyRepository.save(bookCopy);
+
+        return savedBookcopy.convertToDto();
+    }
+
     // Asserts
 
     private BookCopy assertThereIsABookCopyAvailable(Integer idBook) {
@@ -40,4 +58,6 @@ public class BookCopyService {
 
         return bookCopy;
     }
+
+
 }

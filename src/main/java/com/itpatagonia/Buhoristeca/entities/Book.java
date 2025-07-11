@@ -1,5 +1,6 @@
 package com.itpatagonia.Buhoristeca.entities;
 
+import com.itpatagonia.Buhoristeca.dto.BookCopyDto;
 import com.itpatagonia.Buhoristeca.dto.BookDto;
 import jakarta.persistence.*;
 
@@ -66,5 +67,9 @@ public class Book {
 
     public void addTitleTo(StringBuilder bookTitle) {
         bookTitle.append(this.title);
+    }
+
+    public BookCopyId getBookCopyId(Integer idBookCopy) {
+        return new BookCopyId(this.idBook, idBookCopy);
     }
 }

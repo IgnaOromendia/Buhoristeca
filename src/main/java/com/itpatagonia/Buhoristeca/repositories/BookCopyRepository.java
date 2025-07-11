@@ -1,13 +1,14 @@
 package com.itpatagonia.Buhoristeca.repositories;
 
 import com.itpatagonia.Buhoristeca.entities.BookCopy;
+import com.itpatagonia.Buhoristeca.entities.BookCopyId;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-public interface BookCopyRepository extends JpaRepository<BookCopy, Integer> {
+public interface BookCopyRepository extends JpaRepository<BookCopy, BookCopyId> {
 
     @Query(value = """
             SELECT bc.*
@@ -37,4 +38,14 @@ public interface BookCopyRepository extends JpaRepository<BookCopy, Integer> {
             """, nativeQuery = true)
     void updateStateToAvailableOf(@Param("idBook") Integer idBook,
                                   @Param("idBookCopy") Integer idBookCopy);
+
+
+    @Query(value = """
+            SELECT idBookCopy
+            FROM bookCopy
+            WHERE idBook = :idBook
+            ORDER BY idBookCopy DESC
+            LIMIT 1
+            """, nativeQuery = true)
+    Integer getLastIdBookCopy(@Param("idBook") Integer idBook);
 }
