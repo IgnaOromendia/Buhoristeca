@@ -72,4 +72,8 @@ public class Book {
     public BookCopyId getBookCopyId(Integer idBookCopy) {
         return new BookCopyId(this.idBook, idBookCopy);
     }
+
+    public boolean isActive() {
+        return this.isActive == 1;
+    }
 }

@@ -32,9 +32,12 @@ public class LoanService {
 
     public LoanDto registerNewLoan(Integer idClient, Integer idBook, LocalDate returnDate) {
         if (returnDate != null) DateValidator.assertEndDateIsAfterStartDate(LocalDate.now(), returnDate);
+
         bookService.assertBookExists(idBook);
+        bookService.assertBookIsActive(idBook);
 
         Client client = clientService.getClientById(idClient);
+        clientService.assertClientIsActive(idClient);
 
         assertClientDoesNotHaveAnotherActiveLoan(idClient);
 

@@ -5,6 +5,7 @@ import com.itpatagonia.Buhoristeca.dto.ClientRequestDto;
 import com.itpatagonia.Buhoristeca.entities.Client;
 import com.itpatagonia.Buhoristeca.entities.Role;
 import com.itpatagonia.Buhoristeca.exceptions.ClientAlreadyRegisteredException;
+import com.itpatagonia.Buhoristeca.exceptions.ClientIsNotActiveException;
 import com.itpatagonia.Buhoristeca.exceptions.ClientNotFoundException;
 import com.itpatagonia.Buhoristeca.repositories.ClientRepository;
 import jakarta.persistence.EntityManager;
@@ -70,6 +71,11 @@ public class ClientService {
         return savedClient.converToClientDto();
     }
 
+    public List<ClientDto> getActiveClients() {
+        List<Client> clients = clientRepository.findActive();
+        return clients.stream().map(Client::converToClientDto).toList();
+    }
+
     // Asserts
 
     private void assertClientIsNotRegistered(Integer idClient) {
@@ -81,10 +87,7 @@ public class ClientService {
         return clientRepository.findById(idClient).orElseThrow(() -> new ClientNotFoundException(idClient));
     }
 
-    public List<ClientDto> getActiveClients() {
-        List<Client> clients = clientRepository.findActive();
-        return clients.stream().map(Client::converToClientDto).toList();
+    public void assertClientIsActive(Integer idClient) {
+        if (!clientRepository.findById(idClient).get().isActive()) throw new ClientIsNotActiveException(idClient);
     }
-
-
 }

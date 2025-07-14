@@ -14,7 +14,9 @@ public class ApiExceptionHandler {
             BookCopiesNotAvailableException.class,
             ClientAlreadyRegisteredException.class,
             ClientAlreadyHasALoanException.class,
-            ClientDoesNotHaveThisBookOnLoanException.class
+            ClientDoesNotHaveThisBookOnLoanException.class,
+            BookIsNotActiveException.class,
+            ClientIsNotActiveException.class
     })
     public ResponseEntity<String> handleRuntimeException(RuntimeException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);

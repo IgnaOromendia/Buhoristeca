@@ -56,4 +56,8 @@ public class Client {
         clientName.append(this.name);
         clientLastName.append(this.lastName);
     }
+
+    public boolean isActive() {
+        return this.isActive == 1;
+    }
 }
