@@ -3,7 +3,9 @@ package com.itpatagonia.Buhoristeca.repositories;
 import com.itpatagonia.Buhoristeca.dto.BookCopiesAmountDto;
 import com.itpatagonia.Buhoristeca.entities.Book;
 import com.itpatagonia.Buhoristeca.projections.BookCopiesAmountProjection;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -104,4 +106,21 @@ public interface BookRepository extends JpaRepository<Book, Integer> {
                                    @Param("publisher") Integer idPublisher,
                                    @Param("author") Integer idAuthor,
                                    @Param("language") Integer idLanguage);
+
+    @Query(value = """
+            SELECT *
+            FROM book
+            WHERE isActive = 1
+            """, nativeQuery = true)
+    List<Book> findActive();
+
+    @Transactional
+    @Modifying
+    @Query(value = """
+            UPDATE book
+            SET isActive = :status
+            WHERE idBook = :idBook
+            """, nativeQuery = true)
+    void updateStatus(@Param("idBook") Integer idBook,
+                      @Param("status") Integer newStatus);
 }

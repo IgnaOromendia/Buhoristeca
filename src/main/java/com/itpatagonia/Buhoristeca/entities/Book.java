@@ -62,7 +62,7 @@ public class Book {
     public Book() {}
 
     public BookDto convertToBookDto() {
-        return new BookDto(title, description, publicationDate, genres);
+        return new BookDto(this.title, this.description, this.publicationDate, this.genres, this.isActive);
     }
 
     public void addTitleTo(StringBuilder bookTitle) {

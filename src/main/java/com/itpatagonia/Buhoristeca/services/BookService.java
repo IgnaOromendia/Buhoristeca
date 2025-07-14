@@ -10,6 +10,9 @@ import com.itpatagonia.Buhoristeca.projections.BookCopiesAmountProjection;
 import com.itpatagonia.Buhoristeca.repositories.*;
 
 import com.itpatagonia.Buhoristeca.util.DateValidator;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -41,6 +44,12 @@ public class BookService {
 
     @Autowired
     private RoleService roleService;
+
+    @PersistenceContext
+    private EntityManager entityManager;
+
+    private final Integer activeStatus   = 1;
+    private final Integer inactiveStatus = 0;
 
     public List<BookDto> getAllLoanedBooksByRole(Integer idRole, LocalDate startDate, LocalDate endDate) {
         DateValidator.assertEndDateIsAfterStartDate(startDate, endDate);
@@ -121,6 +130,34 @@ public class BookService {
         return assertBookExists(idBook);
     }
 
+    public List<BookDto> getActiveBooks() {
+        List<Book> books = bookRepository.findActive();
+        return books.stream().map(Book::convertToBookDto).toList();
+    }
+
+    @Transactional
+    public BookDto removeBookWithId(Integer idBook) {
+        return updateBookStatus(idBook, inactiveStatus);
+    }
+
+    @Transactional
+    public BookDto activateBookWithId(Integer idBook) {
+        return updateBookStatus(idBook, activeStatus);
+    }
+
+    @Transactional
+    private BookDto updateBookStatus(Integer idBook, Integer newStatus) {
+        assertBookExists(idBook);
+
+        bookRepository.updateStatus(idBook, newStatus);
+
+        Book savedBook = bookRepository.findById(idBook).orElseThrow(() -> new BookNotFoundException(idBook));
+
+        entityManager.refresh(savedBook);
+
+        return savedBook.convertToBookDto();
+    }
+
     // Asserts
 
     public Book assertBookExists(Integer idBook) {
@@ -136,5 +173,4 @@ public class BookService {
                 bookRequestDto.getIdAuthor(),
                 bookRequestDto.getIdLanguage()).isPresent()) throw new BookAlreadyRegisteredException(bookRequestDto.getTitle());
     }
-
 }

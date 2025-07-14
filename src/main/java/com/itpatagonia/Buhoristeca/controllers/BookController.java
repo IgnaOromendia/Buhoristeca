@@ -64,4 +64,19 @@ public class BookController {
     public ResponseEntity<BookDto> registerNewBook(@RequestBody BookRequestDto bookRequestDto) {
         return ResponseEntity.ok(bookService.registerNewBook(bookRequestDto));
     }
+
+    @PutMapping("/remove/{idBook}")
+    public ResponseEntity<BookDto> removeBookWithId(@PathVariable Integer idBook) {
+        return ResponseEntity.ok(bookService.removeBookWithId(idBook));
+    }
+
+    @PutMapping("/activate/{idBook}")
+    public ResponseEntity<BookDto> activateBookWithId(@PathVariable Integer idBook) {
+        return ResponseEntity.ok(bookService.activateBookWithId(idBook));
+    }
+
+    @GetMapping("/active")
+    public ResponseEntity<List<BookDto>> getActiveBooks() {
+        return ResponseEntity.ok(bookService.getActiveBooks());
+    }
 }

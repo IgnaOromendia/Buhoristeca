@@ -19,13 +19,17 @@ public class BookDto {
     private final LocalDate publicationDate;
 
     @JsonProperty
+    private final Integer status;
+
+    @JsonProperty
     private final Set<Genre> genres;
 
-    public BookDto(String title, String description, LocalDate publicationDate, Set<Genre> genres) {
+    public BookDto(String title, String description, LocalDate publicationDate, Set<Genre> genres, Integer status) {
         this.title = title;
         this.description = description;
         this.publicationDate = publicationDate;
         this.genres = genres;
+        this.status = status;
     }
 
     public BookCopyDto converToBookCopyDto(BookState state) {
