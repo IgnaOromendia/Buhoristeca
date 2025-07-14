@@ -46,22 +46,6 @@ public class ClientService {
         return assertClientIsRegistered(idClient);
     }
 
-    // Asserts
-
-    private void assertClientIsNotRegistered(Integer idClient) {
-        if (clientRepository.findById(idClient).isPresent())
-            throw new ClientAlreadyRegisteredException(idClient);
-    }
-
-    public Client assertClientIsRegistered(Integer idClient) {
-        return clientRepository.findById(idClient).orElseThrow(() -> new ClientNotFoundException(idClient));
-    }
-
-    public List<ClientDto> getActiveClients() {
-        List<Client> clients = clientRepository.findActive();
-        return clients.stream().map(Client::converToClientDto).toList();
-    }
-
     @Transactional
     public ClientDto removeClientWithId(Integer idClient) {
         return updateClientStatus(idClient, inactiveStatus);
@@ -85,4 +69,22 @@ public class ClientService {
 
         return savedClient.converToClientDto();
     }
+
+    // Asserts
+
+    private void assertClientIsNotRegistered(Integer idClient) {
+        if (clientRepository.findById(idClient).isPresent())
+            throw new ClientAlreadyRegisteredException(idClient);
+    }
+
+    public Client assertClientIsRegistered(Integer idClient) {
+        return clientRepository.findById(idClient).orElseThrow(() -> new ClientNotFoundException(idClient));
+    }
+
+    public List<ClientDto> getActiveClients() {
+        List<Client> clients = clientRepository.findActive();
+        return clients.stream().map(Client::converToClientDto).toList();
+    }
+
+
 }
