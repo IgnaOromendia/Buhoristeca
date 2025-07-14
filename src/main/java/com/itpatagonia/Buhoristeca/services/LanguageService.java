@@ -1,6 +1,7 @@
 package com.itpatagonia.Buhoristeca.services;
 
 import com.itpatagonia.Buhoristeca.entities.Language;
+import com.itpatagonia.Buhoristeca.exceptions.LanguageNotFoundException;
 import com.itpatagonia.Buhoristeca.repositories.LanguageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,10 +15,6 @@ public class LanguageService {
     private LanguageRepository languageRepository;
 
     public Language getLanguageById(Integer idLanguage) {
-        Optional<Language> language = languageRepository.findById(idLanguage);
-
-        if (language.isEmpty()) throw new RuntimeException("El idioma con id " + idLanguage + " no existe");
-
-        return language.get();
+        return languageRepository.findById(idLanguage).orElseThrow(() -> new LanguageNotFoundException(idLanguage));
     }
 }

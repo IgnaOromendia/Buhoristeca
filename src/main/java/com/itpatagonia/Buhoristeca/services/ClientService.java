@@ -4,8 +4,9 @@ import com.itpatagonia.Buhoristeca.dto.ClientDto;
 import com.itpatagonia.Buhoristeca.dto.ClientRequestDto;
 import com.itpatagonia.Buhoristeca.entities.Client;
 import com.itpatagonia.Buhoristeca.entities.Role;
+import com.itpatagonia.Buhoristeca.exceptions.ClientAlreadyRegisteredException;
+import com.itpatagonia.Buhoristeca.exceptions.ClientNotFoundException;
 import com.itpatagonia.Buhoristeca.repositories.ClientRepository;
-import com.itpatagonia.Buhoristeca.repositories.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -37,15 +38,12 @@ public class ClientService {
     // Asserts
 
     private void assertClientIsNotRegistered(Integer idClient) {
-        if (clientRepository.findById(idClient).isPresent()) throw new RuntimeException("El cliente con id " + idClient + " ya está registrado");
+        if (clientRepository.findById(idClient).isPresent())
+            throw new ClientAlreadyRegisteredException(idClient);
     }
 
     public Client assertClientIsRegistered(Integer idClient) {
-        Optional<Client> client = clientRepository.findById(idClient);
-
-        if (client.isEmpty()) throw new RuntimeException("El cliente con id " + idClient + " no existe");
-
-        return client.get();
+        return clientRepository.findById(idClient).orElseThrow(() -> new ClientNotFoundException(idClient));
     }
 
 }

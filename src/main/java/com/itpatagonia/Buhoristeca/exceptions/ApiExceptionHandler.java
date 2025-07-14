@@ -8,12 +8,30 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class ApiExceptionHandler {
 
-    @ExceptionHandler({RuntimeException.class, BookAlreadyRegistered.class})
+    @ExceptionHandler({
+            RuntimeException.class,
+            BookAlreadyRegisteredException.class,
+            BookCopiesNotAvailableException.class,
+            ClientAlreadyRegisteredException.class,
+            ClientAlreadyHasALoanException.class,
+            ClientDoesNotHaveThisBookOnLoanException.class
+    })
     public ResponseEntity<String> handleRuntimeException(RuntimeException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(BookNotFoundException.class)
+    @ExceptionHandler({
+            BookNotFoundException.class,
+            AuthorNotFoundException.class,
+            BookCopyNotFoundException.class,
+            StateNotFoundException.class,
+            ClientNotFoundException.class,
+            GenresNotFoundException.class,
+            LanguageNotFoundException.class,
+            LoanNotFoundException.class,
+            PublisherNotFoundException.class,
+            RoleNotFoundException.class
+    })
     public ResponseEntity<String> handleBookNotFoundException(RuntimeException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }

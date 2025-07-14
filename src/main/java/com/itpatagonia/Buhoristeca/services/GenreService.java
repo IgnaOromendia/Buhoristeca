@@ -1,6 +1,7 @@
 package com.itpatagonia.Buhoristeca.services;
 
 import com.itpatagonia.Buhoristeca.entities.Genre;
+import com.itpatagonia.Buhoristeca.exceptions.GenresNotFoundException;
 import com.itpatagonia.Buhoristeca.repositories.GenreRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,7 +21,7 @@ public class GenreService {
 
         List<Genre> genres = genreRepository.findAllById(genresIds);
 
-        if (genres.isEmpty()) throw new RuntimeException("Error en los géneros");
+        if (genres.isEmpty()) throw new GenresNotFoundException(genresIds);
 
         return new HashSet<>(genres);
     }

@@ -4,6 +4,9 @@ import com.itpatagonia.Buhoristeca.dto.LoanDto;
 import com.itpatagonia.Buhoristeca.entities.BookCopy;
 import com.itpatagonia.Buhoristeca.entities.Client;
 import com.itpatagonia.Buhoristeca.entities.Loan;
+import com.itpatagonia.Buhoristeca.exceptions.ClientAlreadyHasALoanException;
+import com.itpatagonia.Buhoristeca.exceptions.ClientDoesNotHaveThisBookOnLoanException;
+import com.itpatagonia.Buhoristeca.exceptions.LoanNotFoundException;
 import com.itpatagonia.Buhoristeca.repositories.LoanRepository;
 
 import com.itpatagonia.Buhoristeca.util.DateValidator;
@@ -51,25 +54,24 @@ public class LoanService {
         Integer idLoan = assertBookHasBeenLoanedToClient(idClient, idBook, idBookCopy);
 
         loanRepository.updateReturnDateOfLoanWithId(idLoan);
-        Loan savedLoan = loanRepository.findById(idLoan).orElseThrow(() -> new RuntimeException("Error al buscar el prestamos con id " + idLoan));
+        Loan savedLoan = loanRepository.findById(idLoan).orElseThrow(() -> new LoanNotFoundException(idBook, idBookCopy));
 
         bookCopyService.updateStateToAvailableOf(idBook, idBookCopy);
 
         return savedLoan.convertToDto();
     }
 
-
     // Asserts
 
     private void assertClientDoesNotHaveAnotherActiveLoan(Integer idClient) {
         if (loanRepository.findActiveLoanToClientWithId(idClient) != null)
-            throw new RuntimeException("El cliente con id " + idClient + " ya tiene un préstamo");
+            throw new ClientAlreadyHasALoanException(idClient);
     }
 
     private Integer assertBookHasBeenLoanedToClient(Integer idClient, Integer idBook, Integer idBookCopy) {
         Integer loan = loanRepository.findIdLoanBy(idClient, idBook, idBookCopy);
         if (loan == null)
-            throw new RuntimeException("El cliente con id " + idClient + " no tiene un préstamo sobre esta copia del libro");
+            throw new ClientDoesNotHaveThisBookOnLoanException(idClient);
         return loan;
     }
 

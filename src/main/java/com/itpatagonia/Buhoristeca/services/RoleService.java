@@ -1,6 +1,7 @@
 package com.itpatagonia.Buhoristeca.services;
 
 import com.itpatagonia.Buhoristeca.entities.Role;
+import com.itpatagonia.Buhoristeca.exceptions.RoleNotFoundException;
 import com.itpatagonia.Buhoristeca.repositories.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,10 +19,6 @@ public class RoleService {
     }
 
     public Role assertRoleExists(Integer idRole) {
-        Optional<Role> role = roleRepository.findById(idRole);
-
-        if (role.isEmpty()) throw new RuntimeException("El rol con id " + idRole + " no existe");
-
-        return role.get();
+        return roleRepository.findById(idRole).orElseThrow(() -> new RoleNotFoundException(idRole));
     }
 }

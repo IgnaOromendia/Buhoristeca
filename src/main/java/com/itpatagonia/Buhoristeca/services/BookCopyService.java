@@ -4,6 +4,8 @@ import com.itpatagonia.Buhoristeca.dto.BookCopyDto;
 import com.itpatagonia.Buhoristeca.entities.Book;
 import com.itpatagonia.Buhoristeca.entities.BookCopy;
 import com.itpatagonia.Buhoristeca.entities.BookState;
+import com.itpatagonia.Buhoristeca.exceptions.BookCopiesNotAvailableException;
+import com.itpatagonia.Buhoristeca.exceptions.BookCopyNotFoundException;
 import com.itpatagonia.Buhoristeca.repositories.BookCopyRepository;
 import com.itpatagonia.Buhoristeca.repositories.BookRepository;
 import jakarta.persistence.EntityManager;
@@ -76,14 +78,14 @@ public class BookCopyService {
     // Asserts
 
     private void assertBookCopyExists(Integer idBook, Integer idBookCopy) {
-        if (bookCopyRepository.findByBookCopyId(idBook, idBookCopy) == null) throw new RuntimeException("La copia con id " + idBookCopy + " del libro con id " + idBook + " no existe");
+        if (bookCopyRepository.findByBookCopyId(idBook, idBookCopy) == null)
+            throw new BookCopyNotFoundException(idBookCopy, idBook);
     }
 
     private BookCopy assertThereIsABookCopyAvailable(Integer idBook) {
         BookCopy bookCopy = bookCopyRepository.findAvailableCopyWithIdBook(idBook);
 
-        if (bookCopy == null)
-            throw new RuntimeException("No hya copias disponibles del libro con id " + idBook);
+        if (bookCopy == null) throw new BookCopiesNotAvailableException(idBook);
 
         return bookCopy;
     }

@@ -4,7 +4,7 @@ import com.itpatagonia.Buhoristeca.dto.BookCopiesAmountDto;
 import com.itpatagonia.Buhoristeca.dto.BookDto;
 import com.itpatagonia.Buhoristeca.dto.BookRequestDto;
 import com.itpatagonia.Buhoristeca.entities.*;
-import com.itpatagonia.Buhoristeca.exceptions.BookAlreadyRegistered;
+import com.itpatagonia.Buhoristeca.exceptions.BookAlreadyRegisteredException;
 import com.itpatagonia.Buhoristeca.exceptions.BookNotFoundException;
 import com.itpatagonia.Buhoristeca.projections.BookCopiesAmountProjection;
 import com.itpatagonia.Buhoristeca.repositories.*;
@@ -134,7 +134,7 @@ public class BookService {
                 bookRequestDto.getTitle(),
                 bookRequestDto.getIdPublisher(),
                 bookRequestDto.getIdAuthor(),
-                bookRequestDto.getIdLanguage()).isPresent()) throw new BookAlreadyRegistered(bookRequestDto.getTitle());
+                bookRequestDto.getIdLanguage()).isPresent()) throw new BookAlreadyRegisteredException(bookRequestDto.getTitle());
     }
 
 }
