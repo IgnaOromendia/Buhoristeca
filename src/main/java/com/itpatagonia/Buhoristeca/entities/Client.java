@@ -49,7 +49,7 @@ public class Client {
     public Client() {}
 
     public ClientDto converToClientDto() {
-        return new ClientDto(this.name, this.lastName, this.role);
+        return new ClientDto(this.name, this.lastName, this.role, this.isActive);
     }
 
     public void addNameInformationTo(StringBuilder clientName, StringBuilder clientLastName) {

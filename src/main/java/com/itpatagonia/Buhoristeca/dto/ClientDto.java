@@ -15,10 +15,14 @@ public class ClientDto {
     @JsonProperty
     private final Role role;
 
-    public ClientDto(String name, String lastName, Role role) {
+    @JsonProperty
+    private final Integer status;
+
+    public ClientDto(String name, String lastName, Role role, Integer status) {
         this.name = name;
         this.lastName = lastName;
         this.role = role;
+        this.status = status;
     }
 
 }

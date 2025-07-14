@@ -9,6 +9,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 
 @RestController
 @RequestMapping("/api/user/clients")
@@ -21,4 +23,21 @@ public class ClientController {
     public ResponseEntity<ClientDto> registerNewClient(@RequestBody ClientRequestDto clientRequestDto) {
         return ResponseEntity.ok(clientService.registerNewClient(clientRequestDto));
     }
+
+    @GetMapping("/active")
+    public ResponseEntity<List<ClientDto>> getActiveClients() {
+        return ResponseEntity.ok(clientService.getActiveClients());
+    }
+
+    @PutMapping("/remove/{idClient}")
+    public ResponseEntity<ClientDto> removeClientWithId(@PathVariable Integer idClient) {
+        return ResponseEntity.ok(clientService.removeClientWithId(idClient));
+    }
+
+    @PutMapping("/activate/{idClient}")
+    public ResponseEntity<ClientDto> activateClientWithId(@PathVariable Integer idClient) {
+        return ResponseEntity.ok(clientService.activateClientWithId(idClient));
+    }
+
+
 }
