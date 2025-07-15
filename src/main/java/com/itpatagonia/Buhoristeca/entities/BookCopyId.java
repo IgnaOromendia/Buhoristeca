@@ -3,10 +3,11 @@ package com.itpatagonia.Buhoristeca.entities;
 import com.itpatagonia.Buhoristeca.services.BookCopyService;
 import jakarta.persistence.Embeddable;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 @Embeddable
-public class BookCopyId {
+public class BookCopyId implements Serializable {
 
     private Integer idBook;
     private Integer idBookCopy;
