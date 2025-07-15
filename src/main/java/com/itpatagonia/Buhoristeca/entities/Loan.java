@@ -25,6 +25,10 @@ public class Loan {
     @JoinColumn(name = "dni", nullable = false)
     private Client client;
 
+    @ManyToOne
+    @JoinColumn(name = "idState", nullable = false)
+    private LoanState status;
+
     @Column(name = "loanDate", nullable = false)
     private LocalDate loanDate;
 
@@ -52,6 +56,6 @@ public class Loan {
         this.client.addNameInformationTo(clientName, clientLastName);
         this.bookCopy.addBookInformationTo(bookTitle, copyNumber);
 
-        return new LoanDto(bookTitle.toString(), Integer.parseInt(copyNumber.toString()), clientName.toString(), clientLastName.toString(), this.loanDate, this.returnDate, this.limitReturnDate);
+        return new LoanDto(bookTitle.toString(), Integer.parseInt(copyNumber.toString()), clientName.toString(), clientLastName.toString(), this.status, this.loanDate, this.returnDate, this.limitReturnDate);
     }
 }
