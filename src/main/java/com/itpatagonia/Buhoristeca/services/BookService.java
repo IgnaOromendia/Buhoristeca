@@ -128,7 +128,7 @@ public class BookService {
     }
 
     public Book getBookById(Integer idBook) {
-        return assertBookExists(idBook);
+        return bookRepository.findById(idBook).orElseThrow(() -> new BookNotFoundException(idBook));
     }
 
     public List<BookDto> getActiveBooks() {
@@ -161,10 +161,8 @@ public class BookService {
 
     // Asserts
 
-    public Book assertBookExists(Integer idBook) {
-        Optional<Book> book = bookRepository.findById(idBook);
-        if (book.isEmpty()) throw new BookNotFoundException(idBook);
-        return book.get();
+    public void assertBookExists(Integer idBook) {
+        if (!bookRepository.existsById(idBook)) throw new BookNotFoundException(idBook);
     }
 
     private void assertBookIsNotRegistered(BookRequestDto bookRequestDto) {

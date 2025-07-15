@@ -15,11 +15,7 @@ public class AuthorService {
     private AuthorRepository authorRepository;
 
     public Author getAuthorById(Integer idAuthor) {
-        Optional<Author> author = authorRepository.findById(idAuthor);
-
-        if (author.isEmpty()) throw new AuthorNotFoundException(idAuthor);
-
-        return author.get();
+        return authorRepository.findById(idAuthor).orElseThrow(() -> new AuthorNotFoundException(idAuthor));
     }
 
 }

@@ -3,6 +3,7 @@ package com.itpatagonia.Buhoristeca.services;
 import com.itpatagonia.Buhoristeca.dto.BookCopyDto;
 import com.itpatagonia.Buhoristeca.entities.Book;
 import com.itpatagonia.Buhoristeca.entities.BookCopy;
+import com.itpatagonia.Buhoristeca.entities.BookCopyId;
 import com.itpatagonia.Buhoristeca.entities.BookState;
 import com.itpatagonia.Buhoristeca.exceptions.BookCopiesNotAvailableException;
 import com.itpatagonia.Buhoristeca.exceptions.BookCopyNotFoundException;
@@ -78,7 +79,7 @@ public class BookCopyService {
     // Asserts
 
     private void assertBookCopyExists(Integer idBook, Integer idBookCopy) {
-        if (bookCopyRepository.findByBookCopyId(idBook, idBookCopy) == null)
+        if (!bookCopyRepository.existsById(new BookCopyId(idBook, idBookCopy)))
             throw new BookCopyNotFoundException(idBookCopy, idBook);
     }
 

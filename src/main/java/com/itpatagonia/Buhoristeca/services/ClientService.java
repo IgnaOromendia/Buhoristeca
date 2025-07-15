@@ -44,7 +44,7 @@ public class ClientService {
     }
 
     public Client getClientById(Integer idClient) {
-        return assertClientIsRegistered(idClient);
+        return clientRepository.findById(idClient).orElseThrow(() -> new ClientNotFoundException(idClient));
     }
 
     @Transactional
@@ -79,12 +79,11 @@ public class ClientService {
     // Asserts
 
     private void assertClientIsNotRegistered(Integer idClient) {
-        if (clientRepository.findById(idClient).isPresent())
-            throw new ClientAlreadyRegisteredException(idClient);
+        if (clientRepository.existsById(idClient)) throw new ClientAlreadyRegisteredException(idClient);
     }
 
-    public Client assertClientIsRegistered(Integer idClient) {
-        return clientRepository.findById(idClient).orElseThrow(() -> new ClientNotFoundException(idClient));
+    public void assertClientIsRegistered(Integer idClient) {
+         if (!clientRepository.existsById(idClient)) throw new ClientNotFoundException(idClient);
     }
 
     public void assertClientIsActive(Integer idClient) {

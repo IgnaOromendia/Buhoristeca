@@ -15,10 +15,10 @@ public class RoleService {
     RoleRepository roleRepository;
 
     public Role getRoleById(Integer idRole) {
-        return assertRoleExists(idRole);
+        return roleRepository.findById(idRole).orElseThrow(() -> new RoleNotFoundException(idRole));
     }
 
-    public Role assertRoleExists(Integer idRole) {
-        return roleRepository.findById(idRole).orElseThrow(() -> new RoleNotFoundException(idRole));
+    public void assertRoleExists(Integer idRole) {
+        if(!roleRepository.existsById(idRole)) throw new RoleNotFoundException(idRole);
     }
 }

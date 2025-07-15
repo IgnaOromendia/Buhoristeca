@@ -15,10 +15,6 @@ public class PublisherService {
     private PublisherRepository publisherRepository;
 
     public Publisher getPublisherById(Integer idPublisher) {
-        Optional<Publisher> publisher = publisherRepository.findById(idPublisher);
-
-        if (publisher.isEmpty()) throw new PublisherNotFoundException(idPublisher);
-
-        return publisher.get();
+        return publisherRepository.findById(idPublisher).orElseThrow(() -> new PublisherNotFoundException(idPublisher));
     }
 }
