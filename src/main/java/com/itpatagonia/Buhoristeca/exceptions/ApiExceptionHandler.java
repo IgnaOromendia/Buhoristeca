@@ -16,7 +16,8 @@ public class ApiExceptionHandler {
             ClientAlreadyHasALoanException.class,
             ClientDoesNotHaveThisBookOnLoanException.class,
             BookIsNotActiveException.class,
-            ClientIsNotActiveException.class
+            ClientIsNotActiveException.class,
+            PDFFileException.class
     })
     public ResponseEntity<String> handleRuntimeException(RuntimeException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
@@ -32,7 +33,8 @@ public class ApiExceptionHandler {
             LanguageNotFoundException.class,
             LoanNotFoundException.class,
             PublisherNotFoundException.class,
-            RoleNotFoundException.class
+            RoleNotFoundException.class,
+            PDFBookNotFoundException.class
     })
     public ResponseEntity<String> handleBookNotFoundException(RuntimeException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);

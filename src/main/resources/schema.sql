@@ -71,15 +71,30 @@ CREATE TABLE IF NOT EXISTS bookCopy (
     FOREIGN KEY (idState) REFERENCES bookState (idState)
 );
 
+CREATE TABLE IF NOT EXISTS pdfBook (
+    idPdfBook INT NOT NULL,
+    idBook INT NOT NULL,
+    pdfFile LONGBLOB NOT NULL,
+    PRIMARY KEY (idBook, idPdfBook),
+    FOREIGN KEY (idBook) REFERENCES book (idBook)
+);
+
+CREATE TABLE IF NOT EXISTS loanState (
+    idState INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(30) NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS loan (
     idLoan INT AUTO_INCREMENT PRIMARY KEY,
     idBook INT NOT NULL,
     idBookCopy INT NOT NULL,
     dni INT NOT NULL,
+    idState INT NOT NULL,
     loanDate DATE NOT NULL,
     returnDate DATE,
     limitReturnDate DATE NOT NULL,
     FOREIGN KEY (dni) REFERENCES client (dni),
+    FOREIGN KEY (idState) REFERENCES loanState (idState),
     FOREIGN KEY (idBook, idBookCopy) REFERENCES bookCopy (idBook, idBookCopy)
 );
 
@@ -105,6 +120,11 @@ INSERT IGNORE INTO bookGenre (idBook, idGenre) VALUES (3, 1);
 INSERT IGNORE INTO bookState (idState, title) VALUES (1, 'disponible');
 INSERT IGNORE INTO bookState (idState, title) VALUES (2, 'no disponible');
 
+INSERT IGNORE INTO loanState (idState, title) VALUES (1, 'vigente');
+INSERT IGNORE INTO loanState (idState, title) VALUES (2, 'entregado');
+INSERT IGNORE INTO loanState (idState, title) VALUES (3, 'entregado con demora');
+INSERT IGNORE INTO loanState (idState, title) VALUES (4, 'vencido');
+
 INSERT IGNORE INTO bookCopy (idBook, idBookCopy, idState) VALUES (1,1,2);
 INSERT IGNORE INTO bookCopy (idBook, idBookCopy, idState) VALUES (1,2,2);
 INSERT IGNORE INTO bookCopy (idBook, idBookCopy, idState) VALUES (1,3,1);
@@ -119,7 +139,7 @@ INSERT IGNORE INTO role (idRole, title) VALUES (2, 'professor');
 INSERT IGNORE INTO client (dni, name, lastName, birthDate, address, email, idRole) VALUES (1, 'Ignacio', 'Oromendia', '2001-03-26', 'Calle 2201', 'igna@test.com', 1);
 INSERT IGNORE INTO client (dni, name, lastName, birthDate, address, email, idRole) VALUES (2, 'Juan', 'Perez', '1990-10-25', 'Calle 121', 'jaun@test.com', 2);
 
-INSERT IGNORE INTO loan (idLoan, idBook, idBookCopy, dni, loanDate, limitReturnDate) VALUES (1, 1, 1, 1, CURRENT_DATE, CURRENT_DATE + INTERVAL 14 DAY);
-INSERT IGNORE INTO loan (idLoan, idBook, idBookCopy, dni, loanDate, limitReturnDate) VALUES (2, 2, 1, 2, CURRENT_DATE, CURRENT_DATE + INTERVAL 14 DAY);
-INSERT IGNORE INTO loan (idLoan, idBook, idBookCopy, dni, loanDate, limitReturnDate) VALUES (3, 1, 2, 2, CURRENT_DATE, CURRENT_DATE + INTERVAL 14 DAY);
+INSERT IGNORE INTO loan (idLoan, idBook, idBookCopy, dni, idState, loanDate, limitReturnDate) VALUES (1, 1, 1, 1, 1, CURRENT_DATE, CURRENT_DATE + INTERVAL 14 DAY);
+INSERT IGNORE INTO loan (idLoan, idBook, idBookCopy, dni, idState, loanDate, limitReturnDate) VALUES (2, 2, 1, 2, 1, CURRENT_DATE, CURRENT_DATE + INTERVAL 14 DAY);
+INSERT IGNORE INTO loan (idLoan, idBook, idBookCopy, dni, idState, loanDate, limitReturnDate) VALUES (3, 1, 2, 2, 1, CURRENT_DATE, CURRENT_DATE + INTERVAL 14 DAY);
 

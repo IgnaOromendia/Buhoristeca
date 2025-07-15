@@ -15,4 +15,8 @@ public class Author {
 
     @Column(name = "name", nullable = false)
     private String name;
+
+    public void addNameTo(StringBuilder bookAuthor) {
+        bookAuthor.append(this.name);
+    }
 }

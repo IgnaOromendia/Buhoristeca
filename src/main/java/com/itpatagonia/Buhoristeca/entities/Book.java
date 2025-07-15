@@ -2,6 +2,7 @@ package com.itpatagonia.Buhoristeca.entities;
 
 import com.itpatagonia.Buhoristeca.dto.BookCopyDto;
 import com.itpatagonia.Buhoristeca.dto.BookDto;
+import com.itpatagonia.Buhoristeca.exceptions.PDFFileException;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -73,7 +74,19 @@ public class Book {
         return new BookCopyId(this.idBook, idBookCopy);
     }
 
+    public PDFBookId getPDFBookId(Integer idPdfBook) {
+        return new PDFBookId(this.idBook, idPdfBook);
+    }
+
     public boolean isActive() {
         return this.isActive == 1;
+    }
+
+    public void throwExceptionUploadingPDF(String message) {
+        throw new PDFFileException(this.idBook, message);
+    }
+
+    public void addAuthorTo(StringBuilder bookAuthor) {
+        this.author.addNameTo(bookAuthor);
     }
 }
