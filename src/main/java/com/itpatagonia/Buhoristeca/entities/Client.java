@@ -4,6 +4,7 @@ import com.itpatagonia.Buhoristeca.dto.ClientDto;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 @Entity
 @Table(name = "client")
@@ -59,5 +60,13 @@ public class Client {
 
     public boolean isActive() {
         return this.isActive == 1;
+    }
+
+    public void setInactive() {
+        this.isActive = 0;
+    }
+
+    public void setActive() {
+        this.isActive = 1;
     }
 }

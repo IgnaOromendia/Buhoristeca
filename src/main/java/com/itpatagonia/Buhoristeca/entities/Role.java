@@ -14,6 +14,11 @@ public class Role {
     @Column(name = "title")
     private String title;
 
+    public Role(int idRole, String title) {
+        this.idRole = idRole;
+        this.title = title;
+    }
+
     @Override
     @JsonValue
     public String toString() {
