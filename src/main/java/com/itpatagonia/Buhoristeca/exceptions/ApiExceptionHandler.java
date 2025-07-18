@@ -17,7 +17,8 @@ public class ApiExceptionHandler {
             ClientDoesNotHaveThisBookOnLoanException.class,
             BookIsNotActiveException.class,
             ClientIsNotActiveException.class,
-            PDFFileException.class
+            PDFFileException.class,
+            EndDateIsAfterStartDateException.class
     })
     public ResponseEntity<String> handleRuntimeException(RuntimeException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
