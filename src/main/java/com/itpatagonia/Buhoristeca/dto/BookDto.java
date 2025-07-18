@@ -5,6 +5,7 @@ import com.itpatagonia.Buhoristeca.entities.BookState;
 import com.itpatagonia.Buhoristeca.entities.Genre;
 
 import java.time.LocalDate;
+import java.util.Objects;
 import java.util.Set;
 
 public class BookDto {
@@ -36,4 +37,15 @@ public class BookDto {
         return new BookCopyDto(this.title, this.description, this.publicationDate, this.genres, state);
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        BookDto other = (BookDto) obj;
+        return Objects.equals(title, other.title) &&
+                Objects.equals(description, other.description) &&
+                Objects.equals(publicationDate, other.publicationDate) &&
+                Objects.equals(status, other.status) &&
+                Objects.equals(genres, other.genres);
+    }
 }

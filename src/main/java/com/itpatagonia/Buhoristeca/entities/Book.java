@@ -89,4 +89,12 @@ public class Book {
     public void addAuthorTo(StringBuilder bookAuthor) {
         this.author.addNameTo(bookAuthor);
     }
+
+    public void setInactive() {
+        this.isActive = 0;
+    }
+
+    public void setActive() {
+        this.isActive = 1;
+    }
 }
