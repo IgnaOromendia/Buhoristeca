@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.itpatagonia.Buhoristeca.entities.LoanState;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 public class LoanDto {
 
@@ -26,20 +27,34 @@ public class LoanDto {
     private final LoanState stauts;
 
     @JsonProperty
-    private final String name;
+    private final String clientName;
 
     @JsonProperty
-    private final String lastName;
+    private final String clientLastName;
 
-    public LoanDto(String bookTitle, Integer copyNumber, String name, String lastName, LoanState status, LocalDate loanDate, LocalDate returnDate, LocalDate limitReturnDate) {
+    public LoanDto(String bookTitle, Integer copyNumber, String clientName, String clientLastName, LoanState status, LocalDate loanDate, LocalDate returnDate, LocalDate limitReturnDate) {
         this.bookTitle = bookTitle;
         this.copyNumber = copyNumber;
-        this.name = name;
-        this.lastName = lastName;
+        this.clientName = clientName;
+        this.clientLastName = clientLastName;
         this.stauts = status;
         this.loanDate = loanDate;
         this.returnDate = returnDate;
         this.limitReturnDate = limitReturnDate;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        LoanDto other = (LoanDto) obj;
+        return Objects.equals(bookTitle, other.bookTitle) &&
+                Objects.equals(copyNumber, other.copyNumber) &&
+                Objects.equals(loanDate, other.loanDate) &&
+                Objects.equals(returnDate, other.returnDate) &&
+                Objects.equals(limitReturnDate, other.limitReturnDate) &&
+                Objects.equals(stauts, other.stauts) &&
+                Objects.equals(clientName, other.clientName) &&
+                Objects.equals(clientLastName, other.clientLastName);
+    }
 }
