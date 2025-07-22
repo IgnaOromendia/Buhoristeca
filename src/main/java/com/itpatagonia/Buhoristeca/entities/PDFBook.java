@@ -48,4 +48,8 @@ public class PDFBook {
     public BookDto convertToBookDto() {
         return this.book.convertToBookDto();
     }
+
+    public byte[] toFile() {
+        return this.file;
+    }
 }

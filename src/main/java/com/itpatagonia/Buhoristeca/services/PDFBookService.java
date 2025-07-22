@@ -28,10 +28,10 @@ public class PDFBookService {
         return savedPDFBook.convertToBookDto();
     }
 
-    public PDFBookDto downloadPDFBookWithId(Integer idBook, Integer idPdfBook) {
+    public byte[] downloadPDFBookWithId(Integer idBook, Integer idPdfBook) {
         bookService.assertBookExists(idBook);
         PDFBook pdfBook = pdfBookRepository.findById(new PDFBookId(idBook, idPdfBook)).orElseThrow(() -> new PDFBookNotFoundException(idBook, idPdfBook));
-        return pdfBook.convertToDto();
+        return pdfBook.toFile();
     }
 
 

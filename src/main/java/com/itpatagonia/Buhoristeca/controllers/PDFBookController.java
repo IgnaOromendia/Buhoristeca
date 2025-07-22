@@ -24,7 +24,7 @@ public class PDFBookController {
     }
 
     @GetMapping("/download")
-    public ResponseEntity<PDFBookDto> downloadPDFBook (
+    public ResponseEntity<byte[]> downloadPDFBook (
             @RequestParam Integer idBook,
             @RequestParam Integer idPdfBook
     ) {
