@@ -11,7 +11,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface LoanRepository extends JpaRepository<Loan, Integer> {
 
-
     @Query(value = """
             SELECT *
             FROM loan
@@ -35,4 +34,13 @@ public interface LoanRepository extends JpaRepository<Loan, Integer> {
             WHERE idLoan = :idLoan
             """, nativeQuery = true)
     void updateReturnDateOfLoanWithId(@Param("idLoan") Integer idLoan);
+
+    @Modifying
+    @Transactional
+    @Query(value = """
+            UPDATE loan
+            SET idState = 4
+            WHERE returnDate IS NULL AND limitReturnDate > CURDATE();
+            """, nativeQuery = true)
+    void updateExpiredLoanStatus();
 }
