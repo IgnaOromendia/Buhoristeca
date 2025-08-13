@@ -37,8 +37,17 @@ public class ApiExceptionHandler {
             RoleNotFoundException.class,
             PDFBookNotFoundException.class
     })
-    public ResponseEntity<String> handleBookNotFoundException(RuntimeException ex) {
+    public ResponseEntity<String> handleNotFoundException(RuntimeException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler({
+            BothCredentialsMandatoryException.class,
+            LoginAuthenticationException.class,
+            LoginGenericException.class
+    })
+    public ResponseEntity<String> handleAuthorizationExceptions(RuntimeException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(Exception.class)
